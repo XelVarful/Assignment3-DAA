@@ -9,31 +9,34 @@ public class PrimAlgorithm {
     public static List<Edge> findMST(Graph graph) {
         List<Edge> mst = new ArrayList<>();
         Set<String> visited = new HashSet<>();
+        PriorityQueue<Edge> pq = new PriorityQueue<>(Comparator.comparingInt(Edge::getWeight));
 
-        if (graph.nodes.isEmpty()) return mst;
-
-        String start = graph.nodes.get(0);
+        String start = graph.getVertices().get(0);
         visited.add(start);
+        for (Edge e : graph.getEdges()) {
+            if (e.getFrom().equals(start) || e.getTo().equals(start))
+                pq.add(e);
+        }
 
-        while (visited.size() < graph.nodes.size()) {
-            Edge minEdge = null;
+        while (!pq.isEmpty() && mst.size() < graph.getVertices().size() - 1) {
+            Edge edge = pq.poll();
+            String nextVertex = visited.contains(edge.getFrom()) ? edge.getTo() : edge.getFrom();
 
-            for (Edge e : graph.edges) {
-                if (visited.contains(e.from) && !visited.contains(e.to) ||
-                        visited.contains(e.to) && !visited.contains(e.from)) {
-                    if (minEdge == null || e.weight < minEdge.weight) {
-                        minEdge = e;
-                    }
+            if (!visited.contains(nextVertex)) {
+                mst.add(edge);
+                visited.add(nextVertex);
+
+                for (Edge e : graph.getEdges()) {
+                    if (visited.contains(e.getFrom()) ^ visited.contains(e.getTo()))
+                        pq.add(e);
                 }
             }
-
-            if (minEdge == null) break;
-
-            mst.add(minEdge);
-            visited.add(minEdge.from);
-            visited.add(minEdge.to);
         }
 
         return mst;
+    }
+
+    public static int calculateTotalWeight(List<Edge> mst) {
+        return mst.stream().mapToInt(Edge::getWeight).sum();
     }
 }

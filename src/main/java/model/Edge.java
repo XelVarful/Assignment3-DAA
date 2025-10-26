@@ -1,9 +1,9 @@
 package model;
 
-public class Edge implements Comparable<Edge> {
-    public String from;
-    public String to;
-    public int weight;
+public class Edge {
+    private String from;
+    private String to;
+    private int weight;
 
     public Edge(String from, String to, int weight) {
         this.from = from;
@@ -11,13 +11,20 @@ public class Edge implements Comparable<Edge> {
         this.weight = weight;
     }
 
-    @Override
-    public int compareTo(Edge other) {
-        return Integer.compare(this.weight, other.weight);
+    public String getFrom() {
+        return from;
+    }
+
+    public String getTo() {
+        return to;
+    }
+
+    public int getWeight() {
+        return weight;
     }
 
     @Override
     public String toString() {
-        return from + " - " + to + " : " + weight;
+        return from + " - " + to + " (" + weight + ")";
     }
 }

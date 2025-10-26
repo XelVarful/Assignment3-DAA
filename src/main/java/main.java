@@ -1,4 +1,3 @@
-
 import algorithms.KruskalAlgorithm;
 import algorithms.PrimAlgorithm;
 import model.Edge;
@@ -9,19 +8,23 @@ import java.util.*;
 
 public class main {
     public static void main(String[] args) {
-        List<Graph> graphs = JsonIO.readGraphs("input.json");
-        Map<Integer, List<Edge>> outputData = new HashMap<>();
+        Graph graph = JsonIO.readGraphFromJson("input.json");
 
-        for (Graph graph : graphs) {
-            System.out.println("Processing Graph ID: " + graph.id);
-            List<Edge> mst = KruskalAlgorithm.findMST(graph);
-            outputData.put(graph.id, mst);
+        List<Edge> primMST = PrimAlgorithm.findMST(graph);
+        List<Edge> kruskalMST = KruskalAlgorithm.findMST(graph);
 
-            mst.forEach(System.out::println);
-            System.out.println("--------------------");
-        }
+        int primWeight = PrimAlgorithm.calculateTotalWeight(primMST);
+        int kruskalWeight = KruskalAlgorithm.calculateTotalWeight(kruskalMST);
 
-        JsonIO.writeResults("output.json", outputData);
-        System.out.println("Results saved to output.json");
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("Prim_MST", primMST);
+        result.put("Prim_TotalWeight", primWeight);
+        result.put("Kruskal_MST", kruskalMST);
+        result.put("Kruskal_TotalWeight", kruskalWeight);
+
+        JsonIO.writeResultToJson("output.json", result);
+
+        System.out.println("✅ Prim Total Weight: " + primWeight);
+        System.out.println("✅ Kruskal Total Weight: " + kruskalWeight);
     }
 }
