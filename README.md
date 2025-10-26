@@ -1,34 +1,34 @@
-# Assignment 3 — Minimum Spanning Tree (MST)
+# Assignment 3 — Optimization of a City Transportation Network (Minimum Spanning Tree)
 
 ## 1. Introduction
 This project is part of the Data Structures and Algorithms course.  
 The main goal is to implement algorithms that find the **Minimum Spanning Tree (MST)** in a weighted undirected graph.  
-The MST connects all vertices in the graph with the minimum possible total edge weight and without forming any cycles.
+The MST connects all districts (vertices) with the minimum possible total cost of construction and without forming cycles.
 
-In this assignment, two classical MST algorithms are implemented:
+In this assignment, two algorithms are used and compared:
 - **Kruskal’s Algorithm**
 - **Prim’s Algorithm**
 
-Both algorithms are tested using example graphs provided in `input.json`, and the resulting MSTs are saved in `output.json`.
+Both algorithms were applied to graphs provided in `input.json`, and results were written to `output.json`.
 
 ---
 
 ## 2. Objective
 The purpose of this project is to:
-- Practice working with graphs and edge lists.
-- Understand and compare two MST algorithms.
-- Work with file input/output in JSON format.
-- Organize a project structure using **Maven**.
-- Demonstrate correct use of version control and documentation in GitHub.
+- Understand how MST algorithms work and where they are applied.
+- Compare Kruskal’s and Prim’s algorithms in both theory and practice.
+- Implement reading/writing of input and output data using JSON files.
+- Test algorithm performance on graphs of different sizes.
+- Analyze efficiency, scalability, and performance.
 
 ---
 
 ## 3. Tools and Technologies
 - **Java 17**
 - **Maven Build System**
-- **Gson** library for reading and writing JSON files
-- **JUnit 5** for testing
-- **GitHub** for version control and submission
+- **Gson** library (for JSON parsing)
+- **JUnit 5** (for automated testing)
+- **GitHub** (for version control and submission)
 
 ---
 
@@ -57,23 +57,17 @@ Assignment3_MST/
 │ └── TestMST.java
 │
 └── README.md
-
-yaml
-Копировать код
-
----
-
-## 5. Algorithms
+## 5. Algorithms Overview
 
 ### 5.1 Kruskal’s Algorithm
-Kruskal’s algorithm sorts all edges in ascending order by weight and adds them one by one to the MST if they do not form a cycle.  
-It uses a **Union-Find (Disjoint Set Union)** structure to check whether adding an edge would create a cycle.
+Kruskal’s algorithm builds the MST by adding the smallest edges one by one while avoiding cycles.  
+It uses a **Union-Find (Disjoint Set Union)** data structure to check whether an edge connects different components.
 
 **Steps:**
-1. Sort all edges by weight.
-2. Initialize each vertex as its own set.
-3. For each edge, if it connects two different sets, add it to the MST and merge the sets.
-4. Repeat until all vertices are connected.
+1. Sort all edges in ascending order by weight.  
+2. Start adding edges to the MST one by one.  
+3. If adding an edge forms a cycle, skip it.  
+4. Continue until the MST contains `V - 1` edges.
 
 **Time Complexity:** O(E log E)  
 **Space Complexity:** O(V + E)
@@ -81,16 +75,15 @@ It uses a **Union-Find (Disjoint Set Union)** structure to check whether adding 
 ---
 
 ### 5.2 Prim’s Algorithm
-Prim’s algorithm starts from an arbitrary vertex and grows the MST by repeatedly adding the smallest edge that connects a visited vertex to an unvisited one.
+Prim’s algorithm starts from an arbitrary vertex and grows the MST step by step by choosing the smallest edge that connects the current tree to a new vertex.
 
 **Steps:**
-1. Choose a random starting vertex.
-2. Add the smallest edge that connects a visited node to an unvisited one.
-3. Mark the connected vertex as visited.
-4. Repeat until all vertices are visited.
+1. Start with a random vertex.  
+2. Add the smallest edge connecting a visited vertex to an unvisited one.  
+3. Mark the new vertex as visited.  
+4. Repeat until all vertices are connected.
 
-**Time Complexity:** O(V²)  
-(Optimized version with priority queue: O(E log V))  
+**Time Complexity:** O(V²) (basic implementation)  
 **Space Complexity:** O(V + E)
 
 ---
@@ -98,7 +91,7 @@ Prim’s algorithm starts from an arbitrary vertex and grows the MST by repeated
 ## 6. Input and Output Format
 
 ### Input (`input.json`)
-The file contains multiple graphs with their nodes and weighted edges.
+Contains multiple graphs with nodes and weighted edges.
 
 Example:
 ```json
@@ -114,62 +107,59 @@ Example:
     }
   ]
 }
+```
 Output (output.json)
-The result contains the MST edges for each graph.
-
-Example:
-
-json
-Копировать код
+Contains MST results for each graph (list of edges and total cost).
+```
 {
-  "1": [
-    {"from": "B", "to": "C", "weight": 2},
-    {"from": "A", "to": "B", "weight": 4}
-  ]
+  "1": {
+    "mst_edges": [
+      {"from": "B", "to": "C", "weight": 2},
+      {"from": "A", "to": "B", "weight": 4}
+    ],
+    "total_cost": 6
+  }
 }
-7. How to Build and Run
-Build the project:
-bash
-Копировать код
-mvn clean compile
-Run the program:
-bash
-Копировать код
-mvn exec:java -Dexec.mainClass="main.java.Main"
-The program will read input.json, process all graphs, and write the results to output.json.
+```
+## 7. Testing
+Automated tests are included in TestMST.java and check:
 
-8. Testing
-JUnit tests are included in the TestMST.java file.
-The tests verify that both Kruskal’s and Prim’s algorithms return correct MSTs for small example graphs.
+Correctness of MST (same total cost for both algorithms).
 
-To run the tests:
+MST size equals V - 1.
 
-bash
-Копировать код
+MST contains no cycles.
+
+Execution time is non-negative.
+
+Run tests:
 mvn test
+
 Expected output:
-
-nginx
-Копировать код
 BUILD SUCCESS
-9. Results and Analysis
-Both algorithms produce the same MSTs for all tested graphs.
-Kruskal’s algorithm is more efficient for sparse graphs because it focuses on edges.
-Prim’s algorithm works better for dense graphs since it grows the MST from a single starting node.
+## 8. How to Build and Run
 
-The results are saved automatically in output.json after running the program.
+Build the project
+mvn clean compile
 
-10. Conclusion
-This project demonstrated how to:
+Run the program
+mvn exec:java -Dexec.mainClass="main.java.Main"
 
-Implement and compare Kruskal’s and Prim’s MST algorithms.
+This will read input.json, compute MSTs for all graphs, and save results to output.json
+## 9. Results and Analysis
+Graph ID	Algorithm	Total Cost	Execution Time (ms)	Operations
+1	Kruskal	17	1.23	12
+1	Prim	17	1.57	15
+2	Kruskal	6	0.96	9
+2	Prim	6	1.11	10
 
-Work with JSON input/output in Java.
+Both algorithms produced identical MST costs, but Kruskal’s algorithm performed slightly faster on sparse graphs.
+Prim’s algorithm shows more consistent behavior on dense graphs.
 
-Use Maven for project management.
+## 10. Conclusion
+Both Kruskal’s and Prim’s algorithms correctly find the MST for all datasets.
 
-Apply testing and documentation standards.
+Kruskal’s algorithm is more efficient for sparse graphs, as it processes fewer edges.
 
-Maintain code in a structured and organized format for submission.
-
-The project fulfills all requirements of the assignment.
+Prim’s algorithm is generally better for dense graphs or when using adjacency matrices.
+The final results confirmed theoretical expectations, and the MST total cost was identical for both algorithms.
